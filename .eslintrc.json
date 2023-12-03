@@ -50,6 +50,7 @@
     "@typescript-eslint/no-unsafe-enum-comparison": "off",
     "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
     "@typescript-eslint/no-floating-promises": "off",
-    "import/no-duplicates": ["error", {"considerQueryString": true}]
+    "import/no-duplicates": ["error", {"considerQueryString": true}],
+    "@typescript-eslint/unbound-method": "off"
   }
 }
