@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { SignIn } from './pages/SignIn.tsx';
 import { Dashboard } from './pages/Dashboard.tsx';
-import { RequireAuth } from './components/RequireAuth';
+import { AuthLayout } from './components/AuthLayout';
 
 import { PocketbaseProvider } from './contexts/PocketbaseContext';
 
@@ -12,7 +12,7 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/sign-in" element={<SignIn />} />
-          <Route element={<RequireAuth />}>
+          <Route element={<AuthLayout />}>
             <Route path="/" element={<Dashboard />} />
           </Route>
         </Routes>
