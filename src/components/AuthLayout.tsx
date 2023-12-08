@@ -32,9 +32,9 @@ export const AuthLayout = () => {
     <AppShell
       header={{ height: 60 }}
       navbar={{
-        width: 300,
-        breakpoint: 'sm',
-        collapsed: { mobile: !opened },
+        width: 0,
+        breakpoint: 'xs',
+        collapsed: { desktop: true, mobile: true },
       }}
       padding="md"
     >

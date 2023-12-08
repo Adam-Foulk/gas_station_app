@@ -488,17 +488,17 @@
   resolved "https://registry.yarnpkg.com/@mantine/hooks/-/hooks-7.2.2.tgz#d116d8659f77c5f05f9dc088887c8857fcb456da"
   integrity sha512-7CFSVP2aQHrBwLLAVf0q5dgj+6QTZmhLTNcuc3pE1du+HLFUdyVS6vvQC6kieZXxOd6UzwFGBlN4G+aDx95XeA==
 
-"@mantine/modals@^7.2.2":
-  version "7.2.2"
-  resolved "https://registry.yarnpkg.com/@mantine/modals/-/modals-7.2.2.tgz#5ef974e0c086daa4dec714ea0ec7bb072f4c84c0"
-  integrity sha512-J65xJ5ZULUG8fvNU+UnHboqEs3ueNDTMITUiVucqw4lupt93JHfamuR/PIV2mrXMYqSaKd4NBnxvkmcpjs0uRg==
+"@mantine/modals@^7.3.1":
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/@mantine/modals/-/modals-7.3.1.tgz#a71e2344f585f4ec5ecd3b7fa532cea7012edb26"
+  integrity sha512-NJ377SqDLeB1UZ12TIC+FHVdkcVSts3TXwzyfp5/0IielP2s/m786M3ZbYIFpNOqltOB3/by+/+XT/idMQJuGg==
 
-"@mantine/notifications@^7.2.2":
-  version "7.2.2"
-  resolved "https://registry.yarnpkg.com/@mantine/notifications/-/notifications-7.2.2.tgz#1f2370bdeaf70347d7996c113a93f941a1a40936"
-  integrity sha512-2MQ0jJi9HOspJOAq0sfE5QvacZytYoLB8k0GwnubnFilSACbpDYeoQXZWmKX0joYhHtKR15muTnF+P1s9kmr3Q==
+"@mantine/notifications@^7.3.1":
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/@mantine/notifications/-/notifications-7.3.1.tgz#0e69fa981bc0cd2ca32819a3564d8df9864a9016"
+  integrity sha512-9q/Kxzc18hx5PZW4uUSoYRKBlVZPojmbS6DFrua9T684MyDz2a4Hhj6d90i+MwDIu39p6C6i3pl8FLoPqeb0ww==
   dependencies:
-    "@mantine/store" "7.2.2"
+    "@mantine/store" "7.3.1"
     react-transition-group "4.4.5"
 
 "@mantine/nprogress@^7.2.2":
@@ -512,6 +512,11 @@
   version "7.2.2"
   resolved "https://registry.yarnpkg.com/@mantine/store/-/store-7.2.2.tgz#d5948fcc1bb3a4c4ae706692f2a636a9367696b5"
   integrity sha512-j8vR8whB332pGI8OXkM2/3rdh4LJxELJQTG+rTsCCd3VQuEJiRTQDKVaOvp9ONja3GU5b1Tk3zhKOrkpgxTJBA==
+
+"@mantine/store@7.3.1":
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/@mantine/store/-/store-7.3.1.tgz#924e16e9e1af90cc0b383b656d90a39462cdeec1"
+  integrity sha512-B4kFI0ZhZTftlMvD5d8P0y1ATKFAMIA5MT4j0gNUgYEKMl1KkM/dT3kBPC2/32jz4GM9t2UL+D3CvkTwSX/BsA==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"

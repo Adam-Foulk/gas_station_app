@@ -12,7 +12,7 @@ export const useCategory = () => {
 
   const getCategory = async (id: string): Promise<CategoryType> => {
     const data = await pb.collection('category').getOne<Expanded<CategoryType>>(id, {
-      expand: 'children,products,category(children)',
+      expand: 'children,products',
     });
 
     return {
