@@ -91,6 +91,7 @@ const Orders = () => {
                 <Table.Th>Name</Table.Th>
                 <Table.Th>Quantity</Table.Th>
                 <Table.Th>Price</Table.Th>
+                <Table.Th>Total</Table.Th>
                 <Table.Th></Table.Th>
               </Table.Tr>
             </Table.Thead>
@@ -106,6 +107,7 @@ const Orders = () => {
                   <Table.Td>{product.name}</Table.Td>
                   <Table.Td>{product.quantity}</Table.Td>
                   <Table.Td>{product.price}</Table.Td>
+                  <Table.Td>{product.price * product.quantity}</Table.Td>
                   <Table.Td style={{ textAlign: 'right' }}>
                     <Button
                       color="red"
@@ -124,7 +126,11 @@ const Orders = () => {
             <Table.Tfoot>
               <Table.Tr>
                 <Table.Td colSpan={3}>Total</Table.Td>
-                <Table.Td colSpan={1}>0 UAH</Table.Td>
+                <Table.Td colSpan={2}>
+                  {orderStore
+                    .getActiveOrder()
+                    ?.products.reduce((acc, product) => (acc += product.quantity * product.price), 0)}
+                </Table.Td>
               </Table.Tr>
             </Table.Tfoot>
           </Table>

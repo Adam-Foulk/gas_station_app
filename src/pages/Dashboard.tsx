@@ -1,4 +1,4 @@
-import { Button, Flex, SimpleGrid, Text } from '@mantine/core';
+import { Button, Flex, Modal, Select, SimpleGrid, Table, Text } from '@mantine/core';
 import Catalog from '../components/Catalog';
 import { useCategory } from '../hooks/catalog/useCategory';
 import { useEffect, useState } from 'react';
@@ -10,15 +10,24 @@ import { usePocketbase } from '../contexts/PocketbaseContext';
 import { useOrder } from '../hooks/order/useOrder';
 import { modals } from '@mantine/modals';
 import { notifications } from '@mantine/notifications';
+import { useCheck } from '../hooks/order/useCheck';
+import { useForm } from '@mantine/form';
 
 export const Dashboard = () => {
   const { user } = usePocketbase();
   const { getRootCategories, getCategory } = useCategory();
   const { createOrderProduct, createOrder } = useOrder();
+  const { createCheck } = useCheck();
   const { getProduct } = useProduct();
   const categoryStore = useCategoryStore();
   const orderStore = useOrderStore();
   const [isCatalogRoot, setIsCatalogRoot] = useState(true);
+
+  const [orderModalOpen, setOrderModalOpen] = useState(false);
+
+  const form = useForm<{ payment_method: PaymentMethod }>({
+    initialValues: { payment_method: 'cash' },
+  });
 
   const openConfirmDropOrderModal = () =>
     modals.openConfirmModal({
@@ -66,7 +75,7 @@ export const Dashboard = () => {
     }
   };
 
-  const handlePay = async () => {
+  const handlePay = async (data: { payment_method: PaymentMethod }) => {
     const order = orderStore.getActiveOrder();
 
     try {
@@ -82,10 +91,15 @@ export const Dashboard = () => {
           orderProductIds.push(result.id);
         }
 
-        await createOrder({
+        const newOrder = await createOrder({
           cash_desk: import.meta.env.VITE_CASH_DESK_NUMBER,
           user: user!.id,
           products: orderProductIds,
+        });
+
+        await createCheck({
+          order: newOrder.id as string,
+          payment_method: data.payment_method,
         });
       }
 
@@ -94,6 +108,7 @@ export const Dashboard = () => {
         message: 'Order successfully created',
         color: 'green',
       });
+      setOrderModalOpen(false);
     } catch {
       notifications.show({
         title: 'Order creating',
@@ -134,11 +149,74 @@ export const Dashboard = () => {
             <Button onClick={openConfirmDropOrderModal} color="red">
               Drop order
             </Button>
-            <Button onClick={handlePay}>Pay</Button>
+            <Button onClick={() => setOrderModalOpen(true)} disabled={!orderStore.getActiveOrder()?.products.length}>
+              Pay
+            </Button>
           </Flex>
         </div>
         <div>4</div>
       </SimpleGrid>
+
+      <Modal opened={orderModalOpen} onClose={() => setOrderModalOpen(false)} title="Order">
+        <Table striped highlightOnHover withTableBorder>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Name</Table.Th>
+              <Table.Th>Quantity</Table.Th>
+              <Table.Th>Price</Table.Th>
+              <Table.Th>Total</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {orderStore.getActiveOrder()?.products.map((product) => (
+              <Table.Tr key={product.name}>
+                <Table.Td>{product.name}</Table.Td>
+                <Table.Td>{product.quantity}</Table.Td>
+                <Table.Td>{product.price}</Table.Td>
+                <Table.Td>{product.price * product.quantity}</Table.Td>
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+          <Table.Tfoot>
+            <Table.Tr>
+              <Table.Td colSpan={3}>Total</Table.Td>
+              <Table.Td colSpan={2}>
+                {orderStore
+                  .getActiveOrder()
+                  ?.products.reduce((acc, product) => (acc += product.quantity * product.price), 0)}
+              </Table.Td>
+            </Table.Tr>
+          </Table.Tfoot>
+        </Table>
+        <form onSubmit={form.onSubmit(handlePay)}>
+          <Select
+            {...form.getInputProps('payment_method')}
+            label="Payment method"
+            placeholder="Payment method"
+            data={[
+              { value: 'cash', label: 'Cash' },
+              { value: 'card', label: 'Card' },
+            ]}
+            allowDeselect={false}
+            checkIconPosition="right"
+          />
+
+          <Button fullWidth type="submit" mt="sm" color="green">
+            Transfer
+          </Button>
+          <Button
+            fullWidth
+            onClick={() => {
+              form.reset();
+              setOrderModalOpen(false);
+            }}
+            mt="md"
+            color="red"
+          >
+            Cancel
+          </Button>
+        </form>
+      </Modal>
     </section>
   );
 };
