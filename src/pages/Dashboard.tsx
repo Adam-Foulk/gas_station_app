@@ -51,6 +51,16 @@ export const Dashboard = () => {
   };
 
   const handleProductSelect = async (id: string) => {
+    if (orderStore.getActiveOrder()?.products.find((product) => id === product.id)) {
+      notifications.show({
+        title: 'Product adding',
+        message:
+          'You cannot add same product to order. You might want to change quantity. You can achieve it by clicking on product row in order table.',
+        color: 'red',
+      });
+      return;
+    }
+
     const product = await getProduct(id);
 
     if (product) {
