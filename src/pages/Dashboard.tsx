@@ -1,4 +1,4 @@
-import { Button, Flex, Modal, Select, SimpleGrid, Table, Text } from '@mantine/core';
+import { Button, Modal, Select, SimpleGrid, Table } from '@mantine/core';
 import Catalog from '../components/Catalog';
 import { useCategory } from '../hooks/catalog/useCategory';
 import { useEffect, useState } from 'react';
@@ -8,7 +8,6 @@ import { useProduct } from '../hooks/catalog/useProduct';
 import { useOrderStore } from '../stores/order';
 import { usePocketbase } from '../contexts/PocketbaseContext';
 import { useOrder } from '../hooks/order/useOrder';
-import { modals } from '@mantine/modals';
 import { notifications } from '@mantine/notifications';
 import { useCheck } from '../hooks/order/useCheck';
 import { useForm } from '@mantine/form';
@@ -28,16 +27,6 @@ export const Dashboard = () => {
   const form = useForm<{ payment_method: PaymentMethod }>({
     initialValues: { payment_method: 'cash' },
   });
-
-  const openConfirmDropOrderModal = () =>
-    modals.openConfirmModal({
-      title: 'Please confirm your action',
-      children: <Text size="sm">Are you sure you want to drop this order?</Text>,
-      labels: { confirm: 'Confirm', cancel: 'Cancel' },
-      confirmProps: { color: 'red' },
-      onCancel: () => console.log('Cancel'),
-      onConfirm: () => console.log('Confirmed'),
-    });
 
   const handleSelectChild = async (id: string) => {
     if (id) {
@@ -144,20 +133,12 @@ export const Dashboard = () => {
           />
         </div>
         <div>
-          <Orders />
-          <Flex gap="xs" mt="xs" justify="end">
-            <Button onClick={openConfirmDropOrderModal} color="red">
-              Drop order
-            </Button>
-            <Button onClick={() => setOrderModalOpen(true)} disabled={!orderStore.getActiveOrder()?.products.length}>
-              Pay
-            </Button>
-          </Flex>
+          <Orders onOrderSubmit={() => setOrderModalOpen(true)} />
         </div>
         <div>4</div>
       </SimpleGrid>
 
-      <Modal opened={orderModalOpen} onClose={() => setOrderModalOpen(false)} title="Order">
+      <Modal opened={orderModalOpen} onClose={() => setOrderModalOpen(false)} title="Order" size="xl">
         <Table striped highlightOnHover withTableBorder>
           <Table.Thead>
             <Table.Tr>
