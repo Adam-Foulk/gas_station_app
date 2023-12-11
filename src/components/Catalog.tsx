@@ -37,8 +37,14 @@ const Catalog: FC<CatalogProps> = ({
       )}
       {products.length && (
         <SimpleGrid cols={6}>
-          {products.map(({ id, name }) => (
-            <Button key={id} onClick={() => onSelectProduct(id)} color="cyan" className={catalogStyles.Pane}>
+          {products.map(({ id, name, remainder }) => (
+            <Button
+              key={id}
+              onClick={() => onSelectProduct(id)}
+              color="cyan"
+              className={catalogStyles.Pane}
+              disabled={!remainder?.count}
+            >
               {name}
             </Button>
           ))}

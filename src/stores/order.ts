@@ -55,7 +55,7 @@ export const useOrderStore = create<OrderStore>()(
           ),
         }),
       activate: (activeOrder) => set({ activeOrder }),
-      getActiveOrder: () => (get().activeOrder ? get().orders[get().activeOrder!] : null),
+      getActiveOrder: () => (get().activeOrder || get().activeOrder === 0 ? get().orders[get().activeOrder!] : null),
     }),
     {
       name: 'order-storage',

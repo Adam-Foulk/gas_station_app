@@ -1,7 +1,9 @@
-import { Button, Table, Tabs, TextInput, Text, Flex } from '@mantine/core';
+import { Button, Table, Tabs, Text, Flex, NumberInput, Modal } from '@mantine/core';
 import { useOrderStore } from '../stores/order';
 import { FC, useRef, useState } from 'react';
 import { modals } from '@mantine/modals';
+import { useProduct } from '../hooks/catalog/useProduct';
+import { useForm } from '@mantine/form';
 
 type OrdersProps = {
   onOrderSubmit(): void;
@@ -9,9 +11,32 @@ type OrdersProps = {
 
 const Orders: FC<OrdersProps> = ({ onOrderSubmit }) => {
   const orderStore = useOrderStore();
+  const { getProduct } = useProduct();
   const [tabValue, setTabValue] = useState<string | null>(`order-${orderStore.activeOrder}`);
+  const [quantityModalOpen, setQuantityModalOpen] = useState(false);
   const selectedProductId = useRef<string | null | undefined>(null);
-  const quantityInputRef = useRef<HTMLInputElement>(null);
+  const [currentProduct, setCurrentProduct] = useState<ProductType | null>(null);
+
+  const form = useForm<{ quantity: number }>({
+    initialValues: {
+      quantity: 1,
+    },
+  });
+
+  const handleSelectProduct = async () => {
+    if (selectedProductId.current) {
+      const product = await getProduct(selectedProductId.current);
+
+      if (product) {
+        setCurrentProduct(product);
+        form.setValues({
+          quantity:
+            orderStore.getActiveOrder()?.products.find(({ id }) => id === selectedProductId.current)?.quantity || 1,
+        });
+        setQuantityModalOpen(true);
+      }
+    }
+  };
 
   const handleAddOrder = () => {
     orderStore.add();
@@ -27,40 +52,12 @@ const Orders: FC<OrdersProps> = ({ onOrderSubmit }) => {
     orderStore.removeProduct(productId);
   };
 
-  const handleUpdateProductQuantity = () => {
-    if (quantityInputRef.current && selectedProductId.current) {
-      orderStore.setProductQuantity(selectedProductId.current, +quantityInputRef.current.value);
-      quantityInputRef.current.value = '1';
+  const handleUpdateProductQuantity = (data: { quantity: number }) => {
+    if (form.getTransformedValues().quantity <= (currentProduct?.remainder?.count || 1) && selectedProductId.current) {
+      orderStore.setProductQuantity(selectedProductId.current, data.quantity);
+      setQuantityModalOpen(false);
     }
   };
-
-  const openQuantityModal = () =>
-    modals.open({
-      title: 'Product quantity',
-      children: (
-        <>
-          <TextInput
-            ref={quantityInputRef}
-            type="number"
-            label="Value"
-            data-autofocus
-            defaultValue={
-              orderStore.getActiveOrder()?.products.find(({ id }) => id === selectedProductId.current)?.quantity || 1
-            }
-          />
-          <Button
-            fullWidth
-            onClick={() => {
-              handleUpdateProductQuantity();
-              modals.closeAll();
-            }}
-            mt="md"
-          >
-            Submit
-          </Button>
-        </>
-      ),
-    });
 
   const openConfirmDropOrderModal = () =>
     modals.openConfirmModal({
@@ -69,7 +66,7 @@ const Orders: FC<OrdersProps> = ({ onOrderSubmit }) => {
       labels: { confirm: 'Confirm', cancel: 'Cancel' },
       confirmProps: { color: 'red' },
       onConfirm: () => {
-        if (orderStore.activeOrder) {
+        if (orderStore.activeOrder || orderStore.activeOrder === 0) {
           orderStore.remove(orderStore.activeOrder);
 
           if (orderStore.activeOrder > 0) {
@@ -113,7 +110,7 @@ const Orders: FC<OrdersProps> = ({ onOrderSubmit }) => {
                     key={product.name}
                     onClick={() => {
                       selectedProductId.current = product.id;
-                      openQuantityModal();
+                      handleSelectProduct();
                     }}
                   >
                     <Table.Td>{product.name}</Table.Td>
@@ -146,6 +143,7 @@ const Orders: FC<OrdersProps> = ({ onOrderSubmit }) => {
                 </Table.Tr>
               </Table.Tfoot>
             </Table>
+            1
           </Tabs.Panel>
         ))}
       </Tabs>
@@ -159,6 +157,36 @@ const Orders: FC<OrdersProps> = ({ onOrderSubmit }) => {
           </Button>
         </Flex>
       )}
+
+      <Modal opened={quantityModalOpen} onClose={() => setQuantityModalOpen(false)} title="Order" size="xl">
+        <form onSubmit={form.onSubmit(handleUpdateProductQuantity)}>
+          <NumberInput
+            {...form.getInputProps('quantity')}
+            min={1}
+            label="Value"
+            error={
+              form.getTransformedValues().quantity > (currentProduct?.remainder?.count || 1)
+                ? `You can't input quantity greater that product remainder which is ${currentProduct?.remainder?.count}`
+                : null
+            }
+            valueIsNumericString
+          />
+          <Button fullWidth type="submit" mt="sm" color="green">
+            Submit
+          </Button>
+          <Button
+            fullWidth
+            onClick={() => {
+              form.reset();
+              setQuantityModalOpen(false);
+            }}
+            mt="md"
+            color="red"
+          >
+            Cancel
+          </Button>
+        </form>
+      </Modal>
     </>
   );
 };

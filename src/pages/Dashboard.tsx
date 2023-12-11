@@ -11,6 +11,7 @@ import { useOrder } from '../hooks/order/useOrder';
 import { notifications } from '@mantine/notifications';
 import { useCheck } from '../hooks/order/useCheck';
 import { useForm } from '@mantine/form';
+import { useProductRemainder } from '../hooks/catalog/useProductRemainder';
 
 export const Dashboard = () => {
   const { user } = usePocketbase();
@@ -18,8 +19,11 @@ export const Dashboard = () => {
   const { createOrderProduct, createOrder } = useOrder();
   const { createCheck } = useCheck();
   const { getProduct } = useProduct();
+  const { updateProductRemainder } = useProductRemainder();
+
   const categoryStore = useCategoryStore();
   const orderStore = useOrderStore();
+
   const [isCatalogRoot, setIsCatalogRoot] = useState(true);
 
   const [orderModalOpen, setOrderModalOpen] = useState(false);
@@ -70,6 +74,7 @@ export const Dashboard = () => {
         price: product.price,
         quantity: 1,
         type: product.type.name,
+        remainder: product.remainder,
       });
     }
   };
@@ -87,6 +92,7 @@ export const Dashboard = () => {
             quantity: product.quantity,
             price: product.price,
           });
+          await updateProductRemainder(product.remainder?.id!, product.remainder?.count! - product.quantity);
           orderProductIds.push(result.id);
         }
 
@@ -107,6 +113,22 @@ export const Dashboard = () => {
         message: 'Order successfully created',
         color: 'green',
       });
+
+      if (orderStore.activeOrder || orderStore.activeOrder === 0) {
+        orderStore.remove(orderStore.activeOrder);
+
+        if (orderStore.activeOrder > 0) {
+          orderStore.activate(orderStore.orders.length - 2);
+        }
+      }
+
+      setIsCatalogRoot(true);
+      const children = await getRootCategories();
+      categoryStore.setCategory({
+        children,
+        products: [],
+      });
+
       setOrderModalOpen(false);
     } catch {
       notifications.show({

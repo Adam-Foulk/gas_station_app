@@ -4,6 +4,7 @@ type NewOrderProduct = {
   type: string;
   quantity: number;
   price: number;
+  remainder?: ProductRemainderType;
 };
 
 type NewOrder = {
