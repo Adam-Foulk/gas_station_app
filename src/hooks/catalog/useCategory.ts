@@ -15,9 +15,11 @@ export const useCategory = () => {
       expand: 'children,products',
     });
 
-    const remainders = await pb.collection('product_remainder').getFullList<Expanded<ProductRemainderType>>({
-      expand: 'unit',
-    });
+    const remainders = (
+      await pb.collection('product_remainder').getFullList<Expanded<ProductRemainderType>>({
+        expand: 'unit',
+      })
+    ).map((reminder) => ({ ...reminder, unit: reminder.expand.unit }));
 
     return {
       ...category,

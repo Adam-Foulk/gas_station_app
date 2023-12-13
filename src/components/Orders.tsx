@@ -149,7 +149,7 @@ const Orders: FC<OrdersProps> = ({ onOrderSubmit }) => {
       </Tabs>
       {orderStore.activeOrder !== null && (
         <Flex gap="xs" mt="xs" justify="end">
-          <Button onClick={openConfirmDropOrderModal} color="red">
+          <Button onClick={openConfirmDropOrderModal} color="red" disabled={!orderStore.orders.length}>
             Drop order
           </Button>
           <Button onClick={onOrderSubmit} disabled={!orderStore.getActiveOrder()?.products.length}>

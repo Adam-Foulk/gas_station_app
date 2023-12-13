@@ -25,7 +25,7 @@ const Catalog: FC<CatalogProps> = ({
     onBackClick?.(parentId);
   };
   return (
-    <Group>
+    <Group p={2}>
       {children.length && (
         <SimpleGrid cols={4}>
           {children.map(({ id, name }) => (

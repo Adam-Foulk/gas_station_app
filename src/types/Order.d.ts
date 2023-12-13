@@ -5,6 +5,7 @@ type NewOrderProduct = {
   quantity: number;
   price: number;
   remainder?: ProductRemainderType;
+  station?: string;
 };
 
 type NewOrder = {

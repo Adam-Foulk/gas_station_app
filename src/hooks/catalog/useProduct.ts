@@ -8,13 +8,9 @@ export const useProduct = () => {
       expand: 'type',
     });
 
-    console.log(id);
-
     const remainder = await pb
       .collection('product_remainder')
       .getFirstListItem<Expanded<ProductRemainderType>>(`product="${id}"`);
-
-    console.log(id, remainder);
 
     return {
       ...product,
@@ -23,5 +19,25 @@ export const useProduct = () => {
     };
   };
 
-  return { getProduct };
+  const getProducts = async (filter: string) => {
+    const products = await pb.collection('product').getFullList<Expanded<ProductType>>({
+      expand: 'type',
+      filter,
+    });
+
+    const remainders = (
+      await pb.collection('product_remainder').getFullList<Expanded<ProductRemainderType>>({
+        expand: 'unit',
+      })
+    ).map((reminder) => ({ ...reminder, unit: reminder.expand.unit }));
+
+    return (
+      products?.map((product) => ({
+        ...product,
+        remainder: remainders.find((remainder) => remainder.product === product.id),
+      })) || []
+    );
+  };
+
+  return { getProduct, getProducts };
 };

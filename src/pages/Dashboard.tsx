@@ -1,4 +1,4 @@
-import { Button, Modal, Select, SimpleGrid, Table } from '@mantine/core';
+import { Button, Flex, Modal, SegmentedControl, Select, SimpleGrid, Table } from '@mantine/core';
 import Catalog from '../components/Catalog';
 import { useCategory } from '../hooks/catalog/useCategory';
 import { useEffect, useState } from 'react';
@@ -12,20 +12,23 @@ import { notifications } from '@mantine/notifications';
 import { useCheck } from '../hooks/order/useCheck';
 import { useForm } from '@mantine/form';
 import { useProductRemainder } from '../hooks/catalog/useProductRemainder';
+import { useProductStore } from '../stores/product';
+import { FuelList } from '../components/FuelList';
 
 export const Dashboard = () => {
   const { user } = usePocketbase();
   const { getRootCategories, getCategory } = useCategory();
   const { createOrderProduct, createOrder } = useOrder();
   const { createCheck } = useCheck();
-  const { getProduct } = useProduct();
+  const { getProduct, getProducts } = useProduct();
   const { updateProductRemainder } = useProductRemainder();
 
   const categoryStore = useCategoryStore();
   const orderStore = useOrderStore();
+  const productStore = useProductStore();
 
   const [isCatalogRoot, setIsCatalogRoot] = useState(true);
-
+  const [catalogMode, setCatalogMode] = useState<string>('products');
   const [orderModalOpen, setOrderModalOpen] = useState(false);
 
   const form = useForm<{ payment_method: PaymentMethod }>({
@@ -79,6 +82,32 @@ export const Dashboard = () => {
     }
   };
 
+  const handleFuelSelect = async (id: string, data: FuelFormType) => {
+    if (orderStore.getActiveOrder()?.products.find((product) => id === product.id)) {
+      notifications.show({
+        title: 'Product adding',
+        message:
+          'You cannot add same product to order. You might want to change quantity. You can achieve it by clicking on product row in order table.',
+        color: 'red',
+      });
+      return;
+    }
+
+    const product = await getProduct(id);
+
+    if (product) {
+      orderStore.addProduct({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: data.quantity,
+        type: product.type.name,
+        remainder: product.remainder,
+        station: data.station,
+      });
+    }
+  };
+
   const handlePay = async (data: { payment_method: PaymentMethod }) => {
     const order = orderStore.getActiveOrder();
 
@@ -91,6 +120,7 @@ export const Dashboard = () => {
             type: product.type,
             quantity: product.quantity,
             price: product.price,
+            station: product.station,
           });
           await updateProductRemainder(product.remainder?.id!, product.remainder?.count! - product.quantity);
           orderProductIds.push(result.id);
@@ -140,13 +170,23 @@ export const Dashboard = () => {
   };
 
   useEffect(() => {
-    getRootCategories().then((children) => {
-      categoryStore.setCategory({
-        children,
-        products: [],
-      });
-    });
-  }, []);
+    switch (catalogMode) {
+      case 'products':
+        getRootCategories().then((children) => {
+          categoryStore.setCategory({
+            children,
+            products: [],
+          });
+        });
+        setIsCatalogRoot(true);
+        break;
+      case 'fuel':
+        getProducts('parent=""').then((products) => {
+          productStore.setProducts(products);
+        });
+        break;
+    }
+  }, [catalogMode]);
 
   return (
     <section>
@@ -154,15 +194,30 @@ export const Dashboard = () => {
       <SimpleGrid cols={2}>
         <div>1</div>
         <div>
-          <Catalog
-            children={categoryStore.children}
-            products={categoryStore.products}
-            onSelectChild={handleSelectChild}
-            onSelectProduct={handleProductSelect}
-            onBackClick={handleSelectChild}
-            parentId={categoryStore.parentId}
-            isCatalogRoot={isCatalogRoot}
-          />
+          <Flex justify="center">
+            <SegmentedControl
+              value={catalogMode}
+              onChange={setCatalogMode}
+              size="lg"
+              mb="lg"
+              data={[
+                { label: 'Products', value: 'products' },
+                { label: 'Fuel', value: 'fuel' },
+              ]}
+            />
+          </Flex>
+          {catalogMode === 'products' && (
+            <Catalog
+              children={categoryStore.children}
+              products={categoryStore.products}
+              onSelectChild={handleSelectChild}
+              onSelectProduct={handleProductSelect}
+              onBackClick={handleSelectChild}
+              parentId={categoryStore.parentId}
+              isCatalogRoot={isCatalogRoot}
+            />
+          )}
+          {catalogMode === 'fuel' && <FuelList data={productStore.products} onSelectFuel={handleFuelSelect} />}
         </div>
         <div>
           <Orders onOrderSubmit={() => setOrderModalOpen(true)} />
