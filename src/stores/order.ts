@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 type OrderStore = {
+  checks: CheckType[];
+  selectedCheck: CheckType | null;
   activeOrder: number | null;
   orders: NewOrder[];
   add(): void;
@@ -11,11 +13,15 @@ type OrderStore = {
   setProductQuantity(productId: string, quantity: number): void;
   activate(activeOrder: number | null): void;
   getActiveOrder(): NewOrder | null;
+  setChecks(checks: CheckType[]): void;
+  setSelectedCheck(selectedCheck: CheckType): void;
 };
 
 export const useOrderStore = create<OrderStore>()(
   persist(
     (set, get) => ({
+      checks: [],
+      selectedCheck: null,
       orders: [],
       activeOrder: null,
       add: () => set({ orders: [...get().orders, { products: [] }] }),
@@ -56,6 +62,8 @@ export const useOrderStore = create<OrderStore>()(
         }),
       activate: (activeOrder) => set({ activeOrder }),
       getActiveOrder: () => (get().activeOrder || get().activeOrder === 0 ? get().orders[get().activeOrder!] : null),
+      setChecks: (checks) => set({ checks }),
+      setSelectedCheck: (selectedCheck) => set({ selectedCheck }),
     }),
     {
       name: 'order-storage',

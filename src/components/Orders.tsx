@@ -143,7 +143,6 @@ const Orders: FC<OrdersProps> = ({ onOrderSubmit }) => {
                 </Table.Tr>
               </Table.Tfoot>
             </Table>
-            1
           </Tabs.Panel>
         ))}
       </Tabs>

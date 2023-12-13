@@ -11,5 +11,17 @@ export const useOrder = () => {
     return pb.collection('order').create(newProduct);
   };
 
-  return { createOrderProduct, createOrder };
+  const getOrders = async (): Promise<OrderType[]> => {
+    const orders = await pb.collection<Expanded<OrderType>>('order').getFullList({
+      expand: 'user,products',
+    });
+
+    return orders.map((order) => ({
+      ...order,
+      user: order.expand?.user,
+      products: order.expand?.products,
+    }));
+  };
+
+  return { createOrderProduct, createOrder, getOrders };
 };

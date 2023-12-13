@@ -7,5 +7,20 @@ export const useCheck = () => {
     return pb.collection('check').create(newCheck);
   };
 
-  return { createCheck };
+  const getChecks = async (): Promise<CheckType[]> => {
+    const checks = await pb.collection<Expanded<CheckType>>('check').getFullList({
+      expand: 'order,order.user,order.products,payment_method',
+    });
+
+    return checks.map((check) => ({
+      ...check,
+      order: {
+        ...(check.expand.order as OrderType),
+        user: (check.expand.order as Expanded<OrderType>).expand?.user,
+        products: (check.expand.order as Expanded<OrderType>).expand?.products,
+      },
+    }));
+  };
+
+  return { createCheck, getChecks };
 };

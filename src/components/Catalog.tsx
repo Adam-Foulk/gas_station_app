@@ -43,7 +43,7 @@ const Catalog: FC<CatalogProps> = ({
               onClick={() => onSelectProduct(id)}
               color="cyan"
               className={catalogStyles.Pane}
-              disabled={!remainder?.count}
+              disabled={remainder ? +remainder.count === 0 : true}
             >
               {name}
             </Button>

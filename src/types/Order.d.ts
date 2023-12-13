@@ -15,8 +15,8 @@ type NewOrder = {
 type OrderType = {
   id?: string;
   cash_desk: string;
-  products: string[] | OrderType[];
-  user: string;
+  products: string[] | ProductType[];
+  user: string | UserType;
 };
 
 type OrderStatus = 'created' | 'paid' | 'canceled';

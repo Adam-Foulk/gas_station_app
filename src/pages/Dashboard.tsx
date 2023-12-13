@@ -1,7 +1,7 @@
 import { Button, Flex, Modal, SegmentedControl, Select, SimpleGrid, Table } from '@mantine/core';
 import Catalog from '../components/Catalog';
 import { useCategory } from '../hooks/catalog/useCategory';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useCategoryStore } from '../stores/category';
 import Orders from '../components/Orders';
 import { useProduct } from '../hooks/catalog/useProduct';
@@ -14,12 +14,16 @@ import { useForm } from '@mantine/form';
 import { useProductRemainder } from '../hooks/catalog/useProductRemainder';
 import { useProductStore } from '../stores/product';
 import { FuelList } from '../components/FuelList';
+import generatePDF from 'react-to-pdf';
+import CheckTable from '../components/CheckTable';
+import { Printd } from 'printd';
+import { checkStylesForPrint } from '../styles/CheckTable';
 
 export const Dashboard = () => {
   const { user } = usePocketbase();
   const { getRootCategories, getCategory } = useCategory();
   const { createOrderProduct, createOrder } = useOrder();
-  const { createCheck } = useCheck();
+  const { createCheck, getChecks } = useCheck();
   const { getProduct, getProducts } = useProduct();
   const { updateProductRemainder } = useProductRemainder();
 
@@ -30,6 +34,7 @@ export const Dashboard = () => {
   const [isCatalogRoot, setIsCatalogRoot] = useState(true);
   const [catalogMode, setCatalogMode] = useState<string>('products');
   const [orderModalOpen, setOrderModalOpen] = useState(false);
+  const [checkModalOpen, setCheckModalOpen] = useState(false);
 
   const form = useForm<{ payment_method: PaymentMethod }>({
     initialValues: { payment_method: 'cash' },
@@ -160,6 +165,9 @@ export const Dashboard = () => {
       });
 
       setOrderModalOpen(false);
+
+      const checks = await getChecks();
+      orderStore.setChecks(checks);
     } catch {
       notifications.show({
         title: 'Order creating',
@@ -188,11 +196,51 @@ export const Dashboard = () => {
     }
   }, [catalogMode]);
 
+  useEffect(() => {
+    getChecks().then((data) => orderStore.setChecks(data));
+  }, []);
+
+  const checkDataRef = useRef<HTMLDivElement>(null);
+
   return (
     <section>
       <h2>Dashboard</h2>
       <SimpleGrid cols={2}>
-        <div>1</div>
+        <div>
+          <Table striped highlightOnHover withTableBorder>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>#</Table.Th>
+                <Table.Th>Operator</Table.Th>
+                <Table.Th>Cash Desk</Table.Th>
+                <Table.Th>Payment Method</Table.Th>
+                <Table.Th>Total</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {orderStore.checks.map((check) => (
+                <Table.Tr
+                  key={check.id}
+                  onClick={() => {
+                    orderStore.setSelectedCheck(check);
+                    setCheckModalOpen(true);
+                  }}
+                >
+                  <Table.Td>{check.id}</Table.Td>
+                  <Table.Td>{((check.order as OrderType).user as UserType).name}</Table.Td>
+                  <Table.Td>{(check.order as OrderType).cash_desk}</Table.Td>
+                  <Table.Td>{check.payment_method}</Table.Td>
+                  <Table.Td>
+                    {((check.order as OrderType).products as ProductType[]).reduce(
+                      (acc, product) => acc + (product as ProductType).price * ((product as ProductType).quantity || 1),
+                      0,
+                    )}
+                  </Table.Td>
+                </Table.Tr>
+              ))}
+            </Table.Tbody>
+          </Table>
+        </div>
         <div>
           <Flex justify="center">
             <SegmentedControl
@@ -222,7 +270,7 @@ export const Dashboard = () => {
         <div>
           <Orders onOrderSubmit={() => setOrderModalOpen(true)} />
         </div>
-        <div>4</div>
+        <div></div>
       </SimpleGrid>
 
       <Modal opened={orderModalOpen} onClose={() => setOrderModalOpen(false)} title="Order" size="xl">
@@ -284,6 +332,39 @@ export const Dashboard = () => {
             Cancel
           </Button>
         </form>
+      </Modal>
+
+      <Modal
+        opened={checkModalOpen}
+        onClose={() => setCheckModalOpen(false)}
+        title={`Check ${orderStore.selectedCheck?.id}`}
+        size="xl"
+      >
+        {orderStore.selectedCheck && (
+          <div ref={checkDataRef}>
+            <CheckTable data={orderStore.selectedCheck} />
+          </div>
+        )}
+        <Flex direction="column">
+          <Button
+            fullWidth
+            onClick={() => generatePDF(checkDataRef, { filename: `${orderStore.selectedCheck?.id}.pdf` })}
+            mt="sm"
+          >
+            Download check
+          </Button>
+          <Button
+            fullWidth
+            onClick={() => {
+              if (checkDataRef.current) {
+                new Printd().print(checkDataRef.current, [checkStylesForPrint]);
+              }
+            }}
+            mt="sm"
+          >
+            Print check
+          </Button>
+        </Flex>
       </Modal>
     </section>
   );

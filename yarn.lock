@@ -2494,6 +2494,11 @@ prettier@^3.1.0:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.1.0.tgz#c6d16474a5f764ea1a4a373c593b779697744d5e"
   integrity sha512-TQLvXjq5IAibjh8EpBIkNKxO749UEWABoiIZehEPiY4GNpVdhaFKqSTu+QrlU6D2dPAfubRmtJTi4K4YkQ5eXw==
 
+printd@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/printd/-/printd-1.6.0.tgz#0abc44583740ca106b51b3b1f38589d6f152882e"
+  integrity sha512-/w99P870SbE4MjVXJbWBvrK/HtVOcTEcmzUXcPYzfIaxgyPUGw8lmbhM3JHYbiZ18BCj+qwVEVshf2MLRoAh0Q==
+
 prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
