@@ -15,5 +15,11 @@ type ProductRemainderType = {
   id?: string;
   count: number;
   product: string;
-  unit: string;
+  unit: ProductRemainderUnitType;
+};
+
+type ProductRemainderUnitType = {
+  id?: string;
+  name: string;
+  slug: string;
 };
