@@ -4,15 +4,18 @@ import { usePocketbase } from '../contexts/PocketbaseContext';
 import { useCallback, useEffect } from 'react';
 import { Box, Button, Center, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { useUser } from '../hooks/useUser';
+import { notifications } from '@mantine/notifications';
 
 type FormData = { username: string; password: string };
 
 export const SignIn = () => {
   const { login, user } = usePocketbase();
+  const { getUser, createCurrentSession, getCurrentSession } = useUser();
   const navigate = useNavigate();
 
   const form = useForm({
-    initialValues: { username: '', password: '' },
+    initialValues: { username: 'user', password: '1234567890' },
     validate: {
       username: (value) => (value.length < 2 ? 'Username must have at least 2 letters' : null),
       password: (value) => (value.length < 10 ? 'Password must have at least 10 letters' : null),
@@ -21,8 +24,33 @@ export const SignIn = () => {
 
   const handleOnSubmit = useCallback(
     async ({ username, password }: FormData) => {
-      await login(username, password);
-      navigate('/');
+      try {
+        const targetUser = await getUser(username);
+        try {
+          const ses = await getCurrentSession(targetUser!.id);
+          console.log(ses);
+          notifications.show({
+            title: 'Login',
+            message: 'This user already logged in on another desk',
+            color: 'red',
+          });
+        } catch {
+          await login(username, password);
+          await createCurrentSession(targetUser!.id);
+          notifications.show({
+            title: 'Login',
+            message: 'Logged in successfully',
+            color: 'green',
+          });
+          navigate('/');
+        }
+      } catch (err) {
+        notifications.show({
+          title: 'Login',
+          message: 'User not found',
+          color: 'red',
+        });
+      }
     },
     [login],
   );
