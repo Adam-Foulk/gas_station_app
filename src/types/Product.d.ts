@@ -4,6 +4,8 @@ type ProductType = {
   price: number;
   type: ProductTypeType;
   remainder?: ProductRemainderType;
+  quantity?: number;
+  station?: string;
 };
 
 type ProductTypeType = {

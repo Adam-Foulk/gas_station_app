@@ -1,4 +1,4 @@
-import { Button, Flex, Modal, SegmentedControl, Select, SimpleGrid, Table } from '@mantine/core';
+import { Button, Flex, Modal, SegmentedControl, Select, Table } from '@mantine/core';
 import Catalog from '../components/Catalog';
 import { useCategory } from '../hooks/catalog/useCategory';
 import { useEffect, useRef, useState } from 'react';
@@ -205,42 +205,48 @@ export const Dashboard = () => {
   return (
     <section>
       <h2>Dashboard</h2>
-      <SimpleGrid cols={2}>
-        <div>
-          <Table striped highlightOnHover withTableBorder>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>#</Table.Th>
-                <Table.Th>Operator</Table.Th>
-                <Table.Th>Cash Desk</Table.Th>
-                <Table.Th>Payment Method</Table.Th>
-                <Table.Th>Total</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {orderStore.checks.map((check) => (
-                <Table.Tr
-                  key={check.id}
-                  onClick={() => {
-                    orderStore.setSelectedCheck(check);
-                    setCheckModalOpen(true);
-                  }}
-                >
-                  <Table.Td>{check.id}</Table.Td>
-                  <Table.Td>{((check.order as OrderType).user as UserType).name}</Table.Td>
-                  <Table.Td>{(check.order as OrderType).cash_desk}</Table.Td>
-                  <Table.Td>{check.payment_method}</Table.Td>
-                  <Table.Td>
-                    {((check.order as OrderType).products as ProductType[]).reduce(
-                      (acc, product) => acc + (product as ProductType).price * ((product as ProductType).quantity || 1),
-                      0,
-                    )}
-                  </Table.Td>
+      <Flex gap="xl" justify="center">
+        <Flex direction="column" gap="xl">
+          <div>
+            <Table striped highlightOnHover withTableBorder>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>#</Table.Th>
+                  <Table.Th>Operator</Table.Th>
+                  <Table.Th>Cash Desk</Table.Th>
+                  <Table.Th>Payment Method</Table.Th>
+                  <Table.Th>Total</Table.Th>
                 </Table.Tr>
-              ))}
-            </Table.Tbody>
-          </Table>
-        </div>
+              </Table.Thead>
+              <Table.Tbody>
+                {orderStore.checks.map((check) => (
+                  <Table.Tr
+                    key={check.id}
+                    onClick={() => {
+                      orderStore.setSelectedCheck(check);
+                      setCheckModalOpen(true);
+                    }}
+                  >
+                    <Table.Td>{check.id}</Table.Td>
+                    <Table.Td>{((check.order as OrderType).user as UserType).name}</Table.Td>
+                    <Table.Td>{(check.order as OrderType).cash_desk}</Table.Td>
+                    <Table.Td>{check.payment_method}</Table.Td>
+                    <Table.Td>
+                      {((check.order as OrderType).products as ProductType[]).reduce(
+                        (acc, product) =>
+                          acc + (product as ProductType).price * ((product as ProductType).quantity || 1),
+                        0,
+                      )}
+                    </Table.Td>
+                  </Table.Tr>
+                ))}
+              </Table.Tbody>
+            </Table>
+          </div>
+          <div>
+            <Orders onOrderSubmit={() => setOrderModalOpen(true)} />
+          </div>
+        </Flex>
         <div>
           <Flex justify="center">
             <SegmentedControl
@@ -267,11 +273,7 @@ export const Dashboard = () => {
           )}
           {catalogMode === 'fuel' && <FuelList data={productStore.products} onSelectFuel={handleFuelSelect} />}
         </div>
-        <div>
-          <Orders onOrderSubmit={() => setOrderModalOpen(true)} />
-        </div>
-        <div></div>
-      </SimpleGrid>
+      </Flex>
 
       <Modal opened={orderModalOpen} onClose={() => setOrderModalOpen(false)} title="Order" size="xl">
         <Table striped highlightOnHover withTableBorder>
