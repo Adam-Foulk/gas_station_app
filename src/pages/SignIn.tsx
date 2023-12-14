@@ -15,7 +15,7 @@ export const SignIn = () => {
   const navigate = useNavigate();
 
   const form = useForm({
-    initialValues: { username: 'user', password: '1234567890' },
+    initialValues: { username: '', password: '' },
     validate: {
       username: (value) => (value.length < 2 ? 'Username must have at least 2 letters' : null),
       password: (value) => (value.length < 10 ? 'Password must have at least 10 letters' : null),
