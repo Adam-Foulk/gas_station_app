@@ -1,16 +1,16 @@
 /// <reference path="../pb_data/types.d.ts" />
 migrate((db) => {
   const collection = new Collection({
-    "id": "yf4bs9orafxihpi",
-    "created": "2023-12-04 16:17:23.179Z",
-    "updated": "2023-12-04 16:17:23.179Z",
-    "name": "order_product",
+    "id": "78lfiurxfdig4d8",
+    "created": "2023-12-14 17:29:54.367Z",
+    "updated": "2023-12-14 17:29:54.367Z",
+    "name": "product",
     "type": "base",
     "system": false,
     "schema": [
       {
         "system": false,
-        "id": "raf6sbi2",
+        "id": "281divav",
         "name": "name",
         "type": "text",
         "required": true,
@@ -24,35 +24,23 @@ migrate((db) => {
       },
       {
         "system": false,
-        "id": "rqx2tqm0",
+        "id": "xexh93l9",
         "name": "type",
-        "type": "text",
+        "type": "relation",
         "required": true,
         "presentable": false,
         "unique": false,
         "options": {
-          "min": null,
-          "max": null,
-          "pattern": ""
+          "collectionId": "5ioc2dl10svrbgb",
+          "cascadeDelete": false,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": null
         }
       },
       {
         "system": false,
-        "id": "tv5ezdor",
-        "name": "quantity",
-        "type": "number",
-        "required": false,
-        "presentable": false,
-        "unique": false,
-        "options": {
-          "min": null,
-          "max": null,
-          "noDecimal": false
-        }
-      },
-      {
-        "system": false,
-        "id": "od3ewo2g",
+        "id": "yzm2yuwj",
         "name": "price",
         "type": "number",
         "required": false,
@@ -63,21 +51,51 @@ migrate((db) => {
           "max": null,
           "noDecimal": false
         }
+      },
+      {
+        "system": false,
+        "id": "keugmnmz",
+        "name": "parent",
+        "type": "relation",
+        "required": false,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "collectionId": "mmgq32udt1kgc9g",
+          "cascadeDelete": false,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": null
+        }
+      },
+      {
+        "system": false,
+        "id": "b16w7fnu",
+        "name": "barcode",
+        "type": "text",
+        "required": false,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
       }
     ],
     "indexes": [],
-    "listRule": null,
-    "viewRule": null,
-    "createRule": null,
-    "updateRule": null,
-    "deleteRule": null,
+    "listRule": "",
+    "viewRule": "",
+    "createRule": "",
+    "updateRule": "",
+    "deleteRule": "",
     "options": {}
   });
 
   return Dao(db).saveCollection(collection);
 }, (db) => {
   const dao = new Dao(db);
-  const collection = dao.findCollectionByNameOrId("yf4bs9orafxihpi");
+  const collection = dao.findCollectionByNameOrId("78lfiurxfdig4d8");
 
   return dao.deleteCollection(collection);
 })

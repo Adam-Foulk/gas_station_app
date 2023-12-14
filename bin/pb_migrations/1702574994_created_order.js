@@ -1,19 +1,19 @@
 /// <reference path="../pb_data/types.d.ts" />
 migrate((db) => {
   const collection = new Collection({
-    "id": "78lfiurxfdig4d8",
-    "created": "2023-12-04 16:17:23.179Z",
-    "updated": "2023-12-04 16:17:23.179Z",
-    "name": "product",
+    "id": "mdrq8zxg7bxveov",
+    "created": "2023-12-14 17:29:54.367Z",
+    "updated": "2023-12-14 17:29:54.367Z",
+    "name": "order",
     "type": "base",
     "system": false,
     "schema": [
       {
         "system": false,
-        "id": "281divav",
-        "name": "name",
+        "id": "jxyv19h9",
+        "name": "cash_desk",
         "type": "text",
-        "required": true,
+        "required": false,
         "presentable": false,
         "unique": false,
         "options": {
@@ -24,48 +24,50 @@ migrate((db) => {
       },
       {
         "system": false,
-        "id": "xexh93l9",
-        "name": "type",
+        "id": "753pyajj",
+        "name": "products",
         "type": "relation",
-        "required": true,
+        "required": false,
         "presentable": false,
         "unique": false,
         "options": {
-          "collectionId": "5ioc2dl10svrbgb",
+          "collectionId": "yf4bs9orafxihpi",
           "cascadeDelete": false,
           "minSelect": null,
-          "maxSelect": 1,
+          "maxSelect": null,
           "displayFields": null
         }
       },
       {
         "system": false,
-        "id": "yzm2yuwj",
-        "name": "price",
-        "type": "number",
-        "required": false,
+        "id": "hqci3teb",
+        "name": "user",
+        "type": "relation",
+        "required": true,
         "presentable": false,
         "unique": false,
         "options": {
-          "min": null,
-          "max": null,
-          "noDecimal": false
+          "collectionId": "_pb_users_auth_",
+          "cascadeDelete": false,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": null
         }
       }
     ],
     "indexes": [],
-    "listRule": null,
-    "viewRule": null,
-    "createRule": null,
-    "updateRule": null,
-    "deleteRule": null,
+    "listRule": "",
+    "viewRule": "",
+    "createRule": "",
+    "updateRule": "",
+    "deleteRule": "",
     "options": {}
   });
 
   return Dao(db).saveCollection(collection);
 }, (db) => {
   const dao = new Dao(db);
-  const collection = dao.findCollectionByNameOrId("78lfiurxfdig4d8");
+  const collection = dao.findCollectionByNameOrId("mdrq8zxg7bxveov");
 
   return dao.deleteCollection(collection);
 })

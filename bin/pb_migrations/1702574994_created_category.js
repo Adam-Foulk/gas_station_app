@@ -1,17 +1,17 @@
 /// <reference path="../pb_data/types.d.ts" />
 migrate((db) => {
   const collection = new Collection({
-    "id": "mdrq8zxg7bxveov",
-    "created": "2023-12-04 16:17:23.179Z",
-    "updated": "2023-12-04 16:17:23.179Z",
-    "name": "order",
+    "id": "mmgq32udt1kgc9g",
+    "created": "2023-12-14 17:29:54.367Z",
+    "updated": "2023-12-14 17:29:54.367Z",
+    "name": "category",
     "type": "base",
     "system": false,
     "schema": [
       {
         "system": false,
-        "id": "jxyv19h9",
-        "name": "cash_desk",
+        "id": "4ppizeir",
+        "name": "name",
         "type": "text",
         "required": false,
         "presentable": false,
@@ -24,14 +24,14 @@ migrate((db) => {
       },
       {
         "system": false,
-        "id": "753pyajj",
-        "name": "order_products",
+        "id": "gtmaig6u",
+        "name": "children",
         "type": "relation",
         "required": false,
         "presentable": false,
         "unique": false,
         "options": {
-          "collectionId": "yf4bs9orafxihpi",
+          "collectionId": "mmgq32udt1kgc9g",
           "cascadeDelete": false,
           "minSelect": null,
           "maxSelect": null,
@@ -40,14 +40,30 @@ migrate((db) => {
       },
       {
         "system": false,
-        "id": "hqci3teb",
-        "name": "user",
+        "id": "pyy9x5bg",
+        "name": "products",
         "type": "relation",
-        "required": true,
+        "required": false,
         "presentable": false,
         "unique": false,
         "options": {
-          "collectionId": "_pb_users_auth_",
+          "collectionId": "78lfiurxfdig4d8",
+          "cascadeDelete": false,
+          "minSelect": null,
+          "maxSelect": null,
+          "displayFields": null
+        }
+      },
+      {
+        "system": false,
+        "id": "ass5sf18",
+        "name": "parent",
+        "type": "relation",
+        "required": false,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "collectionId": "mmgq32udt1kgc9g",
           "cascadeDelete": false,
           "minSelect": null,
           "maxSelect": 1,
@@ -56,18 +72,18 @@ migrate((db) => {
       }
     ],
     "indexes": [],
-    "listRule": null,
-    "viewRule": null,
-    "createRule": null,
-    "updateRule": null,
-    "deleteRule": null,
+    "listRule": "",
+    "viewRule": "",
+    "createRule": "",
+    "updateRule": "",
+    "deleteRule": "",
     "options": {}
   });
 
   return Dao(db).saveCollection(collection);
 }, (db) => {
   const dao = new Dao(db);
-  const collection = dao.findCollectionByNameOrId("mdrq8zxg7bxveov");
+  const collection = dao.findCollectionByNameOrId("mmgq32udt1kgc9g");
 
   return dao.deleteCollection(collection);
 })

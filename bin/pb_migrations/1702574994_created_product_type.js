@@ -2,8 +2,8 @@
 migrate((db) => {
   const collection = new Collection({
     "id": "5ioc2dl10svrbgb",
-    "created": "2023-12-04 16:17:23.179Z",
-    "updated": "2023-12-04 16:17:23.179Z",
+    "created": "2023-12-14 17:29:54.367Z",
+    "updated": "2023-12-14 17:29:54.367Z",
     "name": "product_type",
     "type": "base",
     "system": false,
@@ -24,11 +24,11 @@ migrate((db) => {
       }
     ],
     "indexes": [],
-    "listRule": null,
-    "viewRule": null,
-    "createRule": null,
-    "updateRule": null,
-    "deleteRule": null,
+    "listRule": "",
+    "viewRule": "",
+    "createRule": "",
+    "updateRule": "",
+    "deleteRule": "",
     "options": {}
   });
 

@@ -1,17 +1,17 @@
 /// <reference path="../pb_data/types.d.ts" />
 migrate((db) => {
   const collection = new Collection({
-    "id": "t0nuvnfyr7ep5vk",
-    "created": "2023-12-04 16:17:23.179Z",
-    "updated": "2023-12-04 16:17:23.179Z",
-    "name": "product_remainder",
+    "id": "2hz4qjzlspu34a8",
+    "created": "2023-12-14 17:29:54.367Z",
+    "updated": "2023-12-14 17:29:54.367Z",
+    "name": "qunatity_unit",
     "type": "base",
     "system": false,
     "schema": [
       {
         "system": false,
-        "id": "zs2nenpi",
-        "name": "count",
+        "id": "bbhssk2r",
+        "name": "name",
         "type": "text",
         "required": false,
         "presentable": false,
@@ -24,34 +24,32 @@ migrate((db) => {
       },
       {
         "system": false,
-        "id": "2mzplihy",
-        "name": "product",
-        "type": "relation",
-        "required": true,
+        "id": "pz7bjmug",
+        "name": "slug",
+        "type": "text",
+        "required": false,
         "presentable": false,
         "unique": false,
         "options": {
-          "collectionId": "78lfiurxfdig4d8",
-          "cascadeDelete": false,
-          "minSelect": null,
-          "maxSelect": 1,
-          "displayFields": null
+          "min": null,
+          "max": null,
+          "pattern": ""
         }
       }
     ],
     "indexes": [],
-    "listRule": null,
-    "viewRule": null,
-    "createRule": null,
-    "updateRule": null,
-    "deleteRule": null,
+    "listRule": "",
+    "viewRule": "",
+    "createRule": "",
+    "updateRule": "",
+    "deleteRule": "",
     "options": {}
   });
 
   return Dao(db).saveCollection(collection);
 }, (db) => {
   const dao = new Dao(db);
-  const collection = dao.findCollectionByNameOrId("t0nuvnfyr7ep5vk");
+  const collection = dao.findCollectionByNameOrId("2hz4qjzlspu34a8");
 
   return dao.deleteCollection(collection);
 })
