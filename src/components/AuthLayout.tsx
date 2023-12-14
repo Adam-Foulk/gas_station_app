@@ -4,12 +4,22 @@ import { usePocketbase } from '../contexts/PocketbaseContext';
 import { AppShell, Avatar, Burger, Button, Flex, Menu, useMantineColorScheme } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { nameToInitials } from '../utils/nameToInitials';
+import { useUser } from '../hooks/useUser';
 
 export const AuthLayout = () => {
   const { user, logout } = usePocketbase();
+  const { destroyCurrentSession, getCurrentSession } = useUser();
   const location = useLocation();
   const [opened, { toggle }] = useDisclosure();
   const { setColorScheme, colorScheme } = useMantineColorScheme();
+
+  const handleLogout = async () => {
+    const currentSession = await getCurrentSession(user?.id);
+    if (currentSession) {
+      await destroyCurrentSession(currentSession.id);
+      logout();
+    }
+  };
 
   const toggleColorScheme = () => {
     switch (colorScheme) {
@@ -53,7 +63,7 @@ export const AuthLayout = () => {
 
             <Menu.Dropdown>
               <Menu.Item onClick={toggleColorScheme}>Color scheme: {colorScheme}</Menu.Item>
-              <Menu.Item color="red" onClick={logout}>
+              <Menu.Item color="red" onClick={handleLogout}>
                 Log out
               </Menu.Item>
             </Menu.Dropdown>
