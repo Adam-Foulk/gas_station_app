@@ -204,10 +204,10 @@ export const Dashboard = () => {
 
   return (
     <section>
-      <h2>Dashboard</h2>
       <Flex gap="xl" justify="center">
         <Flex direction="column" gap="xl">
           <div>
+            <h2>Dashboard</h2>
             <Table striped highlightOnHover withTableBorder>
               <Table.Thead>
                 <Table.Tr>

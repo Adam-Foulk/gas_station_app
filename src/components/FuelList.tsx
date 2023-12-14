@@ -45,7 +45,7 @@ export const FuelList: FC<FuelListProps> = ({ data, onSelectFuel }) => {
 
   return (
     <div>
-      <Table verticalSpacing="md">
+      <Table verticalSpacing="md" w={516}>
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Name</Table.Th>
