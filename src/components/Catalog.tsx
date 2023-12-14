@@ -1,4 +1,4 @@
-import { Button, Group, SimpleGrid } from '@mantine/core';
+import { Button, Flex, SimpleGrid } from '@mantine/core';
 import catalogStyles from '../styles/Catalog.module.scss';
 import { FC } from 'react';
 
@@ -25,8 +25,8 @@ const Catalog: FC<CatalogProps> = ({
     onBackClick?.(parentId);
   };
   return (
-    <Group p={2}>
-      {children.length && (
+    <Flex p={2} direction="column" gap="md">
+      {children.length > 0 && (
         <SimpleGrid cols={4}>
           {children.map(({ id, name }) => (
             <Button key={id} onClick={() => onSelectChild(id)} className={catalogStyles.Pane}>
@@ -35,8 +35,8 @@ const Catalog: FC<CatalogProps> = ({
           ))}
         </SimpleGrid>
       )}
-      {products.length && (
-        <SimpleGrid cols={6}>
+      {products.length > 0 && (
+        <SimpleGrid cols={4}>
           {products.map(({ id, name, remainder }) => (
             <Button
               key={id}
@@ -63,7 +63,7 @@ const Catalog: FC<CatalogProps> = ({
           </Button>
         )}
       </SimpleGrid>
-    </Group>
+    </Flex>
   );
 };
 
