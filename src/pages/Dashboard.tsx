@@ -232,11 +232,13 @@ export const Dashboard = () => {
                     <Table.Td>{(check.order as OrderType).cash_desk}</Table.Td>
                     <Table.Td>{check.payment_method}</Table.Td>
                     <Table.Td>
-                      {((check.order as OrderType).products as ProductType[]).reduce(
-                        (acc, product) =>
-                          acc + (product as ProductType).price * ((product as ProductType).quantity || 1),
-                        0,
-                      )}
+                      {((check.order as OrderType).products as ProductType[])
+                        .reduce(
+                          (acc, product) =>
+                            acc + (product as ProductType).price * ((product as ProductType).quantity || 1),
+                          0,
+                        )
+                        .toFixed(2)}
                     </Table.Td>
                   </Table.Tr>
                 ))}
@@ -289,20 +291,16 @@ export const Dashboard = () => {
             {orderStore.getActiveOrder()?.products.map((product) => (
               <Table.Tr key={product.name}>
                 <Table.Td>{product.name}</Table.Td>
-                <Table.Td>{product.quantity}</Table.Td>
-                <Table.Td>{product.price}</Table.Td>
-                <Table.Td>{product.price * product.quantity}</Table.Td>
+                <Table.Td>{product.quantity.toFixed(2)}</Table.Td>
+                <Table.Td>{product.price.toFixed(2)}</Table.Td>
+                <Table.Td>{(product.price * product.quantity).toFixed(2)}</Table.Td>
               </Table.Tr>
             ))}
           </Table.Tbody>
           <Table.Tfoot>
             <Table.Tr>
               <Table.Td colSpan={3}>Total</Table.Td>
-              <Table.Td colSpan={2}>
-                {orderStore
-                  .getActiveOrder()
-                  ?.products.reduce((acc, product) => (acc += product.quantity * product.price), 0)}
-              </Table.Td>
+              <Table.Td colSpan={2}>{orderStore.getActiveOrderTotal()}</Table.Td>
             </Table.Tr>
           </Table.Tfoot>
         </Table>

@@ -64,8 +64,8 @@ export const FuelList: FC<FuelListProps> = ({ data, onSelectFuel }) => {
               }}
             >
               <Table.Td>{product.name}</Table.Td>
-              <Table.Td>{product.price}</Table.Td>
-              <Table.Td>{product.remainder?.count}</Table.Td>
+              <Table.Td>{product.price?.toFixed(2)}</Table.Td>
+              <Table.Td>{product.remainder?.count?.toFixed(2)}</Table.Td>
               <Table.Td>{product.remainder?.unit.name}</Table.Td>
             </Table.Tr>
           ))}
@@ -83,8 +83,8 @@ export const FuelList: FC<FuelListProps> = ({ data, onSelectFuel }) => {
             <NumberInput
               {...form.getInputProps('quantity')}
               onChange={(value) => {
-                form.setFieldValue('sum', +value * (currentProduct?.price || 0));
-                form.setFieldValue('quantity', +value);
+                form.setFieldValue('sum', +(+value * (currentProduct?.price || 0)).toFixed(2));
+                form.setFieldValue('quantity', +(+value).toFixed(2));
               }}
               min={1}
               label="Quantity"
@@ -94,8 +94,8 @@ export const FuelList: FC<FuelListProps> = ({ data, onSelectFuel }) => {
             <NumberInput
               {...form.getInputProps('sum')}
               onChange={(value) => {
-                form.setFieldValue('quantity', +value / (currentProduct?.price || 0));
-                form.setFieldValue('sum', +value);
+                form.setFieldValue('quantity', +(+value / (currentProduct?.price || 0)).toFixed(2));
+                form.setFieldValue('sum', +(+value).toFixed(2));
               }}
               min={1}
               label="Sum"

@@ -36,10 +36,10 @@ const CheckTable: FC<CheckTableProps> = ({ data }) => {
           {((data.order as OrderType).products as ProductType[]).map((product) => (
             <tr key={product.name}>
               <td>{product.name}</td>
-              <td>{product.quantity}</td>
-              <td>{product.price}</td>
+              <td>{product.quantity?.toFixed(2)}</td>
+              <td>{product.price.toFixed(2)}</td>
               <td>{product.station}</td>
-              <td>{product.price * (product.quantity || 1)}</td>
+              <td>{(product.price * (product.quantity || 1)).toFixed(2)}</td>
             </tr>
           ))}
         </tbody>
@@ -47,10 +47,9 @@ const CheckTable: FC<CheckTableProps> = ({ data }) => {
           <tr>
             <th colSpan={4}>Total</th>
             <td colSpan={2}>
-              {((data.order as OrderType).products as ProductType[]).reduce(
-                (acc, product) => (acc += (product.quantity || 1) * product.price),
-                0,
-              )}
+              {((data.order as OrderType).products as ProductType[])
+                .reduce((acc, product) => (acc += (product.quantity || 1) * product.price), 0)
+                .toFixed(2)}
             </td>
           </tr>
         </tfoot>

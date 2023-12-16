@@ -15,6 +15,7 @@ type OrderStore = {
   getActiveOrder(): NewOrder | null;
   setChecks(checks: CheckType[]): void;
   setSelectedCheck(selectedCheck: CheckType): void;
+  getActiveOrderTotal(): string;
 };
 
 export const useOrderStore = create<OrderStore>()(
@@ -64,6 +65,12 @@ export const useOrderStore = create<OrderStore>()(
       getActiveOrder: () => (get().activeOrder || get().activeOrder === 0 ? get().orders[get().activeOrder!] : null),
       setChecks: (checks) => set({ checks }),
       setSelectedCheck: (selectedCheck) => set({ selectedCheck }),
+      getActiveOrderTotal: () =>
+        (
+          get()
+            .getActiveOrder()
+            ?.products.reduce((acc, product) => (acc += product.quantity * product.price), 0) || 0
+        ).toFixed(2),
     }),
     {
       name: 'order-storage',

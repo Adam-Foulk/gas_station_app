@@ -54,7 +54,7 @@ const Orders: FC<OrdersProps> = ({ onOrderSubmit }) => {
 
   const handleUpdateProductQuantity = (data: { quantity: number }) => {
     if (form.getTransformedValues().quantity <= (currentProduct?.remainder?.count || 1) && selectedProductId.current) {
-      orderStore.setProductQuantity(selectedProductId.current, data.quantity);
+      orderStore.setProductQuantity(selectedProductId.current, +data.quantity.toFixed(2));
       setQuantityModalOpen(false);
     }
   };
@@ -114,9 +114,9 @@ const Orders: FC<OrdersProps> = ({ onOrderSubmit }) => {
                     }}
                   >
                     <Table.Td>{product.name}</Table.Td>
-                    <Table.Td>{product.quantity}</Table.Td>
-                    <Table.Td>{product.price}</Table.Td>
-                    <Table.Td>{product.price * product.quantity}</Table.Td>
+                    <Table.Td>{product.quantity.toFixed(2)}</Table.Td>
+                    <Table.Td>{product.price.toFixed()}</Table.Td>
+                    <Table.Td>{(product.price * product.quantity).toFixed(2)}</Table.Td>
                     <Table.Td style={{ textAlign: 'right' }}>
                       <Button
                         color="red"
@@ -135,11 +135,7 @@ const Orders: FC<OrdersProps> = ({ onOrderSubmit }) => {
               <Table.Tfoot>
                 <Table.Tr>
                   <Table.Td colSpan={3}>Total</Table.Td>
-                  <Table.Td colSpan={2}>
-                    {orderStore
-                      .getActiveOrder()
-                      ?.products.reduce((acc, product) => (acc += product.quantity * product.price), 0)}
-                  </Table.Td>
+                  <Table.Td colSpan={2}>{orderStore.getActiveOrderTotal()}</Table.Td>
                 </Table.Tr>
               </Table.Tfoot>
             </Table>
