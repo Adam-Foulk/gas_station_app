@@ -7,6 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "pb:start": "./bin/pocketbase serve",
+    "win:pb:start": ".\\bin\\pocketbase.exe serve",
+    "win:pb:migrate": ".\\bin\\pocketbase.exe migrate",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
